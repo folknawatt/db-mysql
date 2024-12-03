@@ -1,28 +1,43 @@
-version: '3.8'
-
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: mysql_container
+  db:
+    image: mysql:latest
+    container_name: db
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: testdb
-      MYSQL_USER: testuser
-      MYSQL_PASSWORD: testpassword
+      MYSQL_ROOT_PASSWORD: root # กำหนด password ของ root
+      MYSQL_DATABASE: tutorial # กำหนด database เริ่มต้นของ mysql
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
 
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: db # ระบุ host ที่จะให้ phpmyadmin ไปจัดการ ซึ่งสามารถใส่เป็นชื่อ container name (db) ได้เลย
+      PMA_PORT: 3306 # ระบุ port ของ Database
+      PMA_USER: root # ระบุ user ของ Database
+      PMA_PASSWORD: root # ระบุ password ของ Database
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+
   python:
-    image: python:3.10
+    image: python:3.12
     container_name: python_app
     working_dir: /app
     volumes:
       - .:/app
-    command: sh -c "pip install -r requirements.txt && python app.py"
+    command: sh -c "python -m pip install --upgrade pip && pip install -r requirements.txt && python app.py"
     depends_on:
-      - mysql
+      - db
+    # environment:
+    #   DATABASE_HOST: db
+    #   DATABASE_USER: root
+    #   DATABASE_PASSWORD: root
+    #   DATABASE_NAME: tutorial
 
 volumes:
   mysql_data:
+    driver: local
