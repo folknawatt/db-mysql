@@ -32,11 +32,6 @@ services:
     command: sh -c "python -m pip install --upgrade pip && pip install -r requirements.txt && python app.py"
     depends_on:
       - db
-    # environment:
-    #   DATABASE_HOST: db
-    #   DATABASE_USER: root
-    #   DATABASE_PASSWORD: root
-    #   DATABASE_NAME: tutorial
 
 volumes:
   mysql_data:

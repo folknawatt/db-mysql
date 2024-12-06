@@ -1,18 +1,19 @@
 # import os
 import pandas as pd
-from sqlalchemy import create_engine, Column, Integer, String 
+from sqlalchemy import create_engine, Column, Integer, String ,Float
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import sessionmaker
 
 # อ่านไฟล์ CSV
-df = pd.read_csv("Product-List.csv")
+df = pd.read_csv("Product-List-3.csv")
 df.rename(
     columns={
         "ลำดับ": "index",
         "รายการสินค้า (Product List)": "product_List",
         "ชื่อสินค้า (Product Name)": "product_Name",
-        "จำนวน Quantity": "quantity",
-        "ราคา Price": "price",
+        "จำนวน": "quantity",
+        "หน่วย": "units",
+        "ราคา Price (บาท)": "price",
     },
     inplace=True,
 )
@@ -26,8 +27,9 @@ class Products(Base):
     index = Column(Integer, primary_key=True)
     product_List = Column(String(255))
     product_Name = Column(String(255))
-    quantity = Column(String(255))
-    price = Column(String(255))
+    quantity = Column(Float(255))
+    units = Column(String(255))
+    price = Column(Float(255))
 
 # สร้าง URL การเชื่อมต่อฐานข้อมูล
 DATABASE_URL = "mysql+mysqlconnector://root:root@db:3306/tutorial"
